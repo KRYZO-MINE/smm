@@ -1,1 +1,45 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sign in · SMM Vault</title><link rel="stylesheet" href="/css/style.css"></head><body class="login-page"><main class="login-card"><div class="brand" style="color:#16352e">SMM<span>VAULT</span></div><p class="eyebrow" style="margin-top:45px">Welcome back</p><h1>Sign in to your panel</h1><p class="sub">Launch, track, and scale your social delivery.</p><p id="error" class="hide" style="color:#d44"></p><form onsubmit="submitAuth(event,'login')" class="grid" style="margin-top:24px"><div class="field"><label>Email</label><input name="email" type="email" required></div><div class="field"><label>Password</label><input name="password" type="password" required></div><button class="btn btn-dark">Sign in</button></form><p class="sub" style="margin-top:20px">New here? <a href="/register.html">Create an account</a></p></main><script src="/js/auth.js"></script></body></html>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign in · SMM Vault</title>
+    <meta
+      name="description"
+      content="SMM Vault is a premium social media marketing panel for reliable campaign delivery, clear pricing, and order control."
+    />
+    <meta property="og:title" content="Sign in · SMM Vault" />
+    <meta
+      property="og:description"
+      content="Manage social media marketing campaigns with SMM Vault."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://website.com/images/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Sign in · SMM Vault" />
+    <meta name="twitter:image" content="https://website.com/images/og-image.svg" />
+    <link rel="canonical" href="https://website.com/login.html" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/seo.js"></script>
+  </head>
+  <body class="login-page">
+    <main class="login-card">
+      <div class="brand" style="color: #16352e">SMM<span>VAULT</span></div>
+      <p class="eyebrow" style="margin-top: 45px">Welcome back</p>
+      <h1>Sign in to your panel</h1>
+      <p class="sub">Launch, track, and scale your social delivery.</p>
+      <p id="error" class="hide" style="color: #d44"></p>
+      <form onsubmit="submitAuth(event, 'login')" class="grid" style="margin-top: 24px">
+        <div class="field"><label>Email</label><input name="email" type="email" required /></div>
+        <div class="field">
+          <label>Password</label><input name="password" type="password" required />
+        </div>
+        <button class="btn btn-dark">Sign in</button>
+      </form>
+      <p class="sub" style="margin-top: 20px">
+        New here? <a href="/register.html">Create an account</a>
+      </p>
+    </main>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>

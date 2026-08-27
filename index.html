@@ -1,1 +1,188 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SMM Vault Panel</title><link rel="stylesheet" href="/css/style.css"></head><body><div class="shell"><aside class="side"><div class="brand">SMM<span>VAULT</span></div><nav class="nav"><a href="#" data-go="dashboard">Overview</a><a href="#" data-go="neworder">New order</a><a href="#" data-go="services">Services</a><a href="#" data-go="orders">My orders</a><a href="#" data-go="wallet">Wallet</a><a href="#" data-go="profile">Profile</a></nav><button onclick="logout()" class="btn btn-quiet" style="margin-top:auto">Log out</button></aside><main class="main"><header class="top"><button id="mobile-menu" class="btn btn-quiet mobile-menu">Menu</button><div><strong id="user-name">Loading...</strong><div class="stat-label">Customer workspace</div></div><div class="badge">Live account</div></header><section class="content"><p class="eyebrow">SMM Vault / <span id="page-title">Overview</span></p><h1 class="title" id="page-title-copy">Welcome back.</h1><p class="sub" id="page-sub">Your command center for the day.</p><div data-view="dashboard"><div class="grid stats"><div class="card"><div class="stat-label">Wallet balance</div><div class="stat-value stat-accent" id="balance">₹0.00</div></div><div class="card"><div class="stat-label">Total orders</div><div class="stat-value" id="order-count">0</div></div><div class="card"><div class="stat-label">In progress</div><div class="stat-value" id="pending-count">0</div></div><div class="card"><div class="stat-label">Account health</div><div class="stat-value">Good</div></div></div><div class="actions" style="margin-bottom:25px"><button class="btn btn-primary" data-go="neworder">+ New order</button><button class="btn btn-quiet" data-go="wallet">Add funds</button><button class="btn btn-quiet" data-go="orders">View orders</button></div><div class="card"><div class="section-head"><h2>Recent orders</h2><a href="#" data-go="orders">View all</a></div><div class="table-wrap"><table><thead><tr><th>Order</th><th>Service</th><th>Amount</th><th>Status</th></tr></thead><tbody id="recent-orders"></tbody></table></div></div></div><div data-view="services" class="hide"><div id="service-grid" class="grid two"></div></div><div data-view="orders" class="hide"><div class="card table-wrap"><table><thead><tr><th>Order</th><th>Service</th><th>Amount</th><th>Status</th></tr></thead><tbody id="orders-table"></tbody></table></div></div><div data-view="wallet" class="hide"><div class="grid stats"><div class="card"><div class="stat-label">Available balance</div><div class="stat-value stat-accent" id="wallet-balance">₹0.00</div></div><div class="card"><div class="stat-label">Total deposited</div><div class="stat-value" id="deposited">₹0.00</div></div><div class="card"><div class="stat-label">Total spent</div><div class="stat-value" id="spent">₹0.00</div></div></div><div class="card table-wrap"><div class="section-head"><h2>Transactions</h2><button class="btn btn-primary" onclick="toast('Payment setup required for live deposits')">Add funds</button></div><table><thead><tr><th>Type</th><th>Amount</th><th>Balance</th><th>Date</th></tr></thead><tbody id="transactions-table"></tbody></table></div></div><div data-view="neworder" class="hide"><div class="card"><form id="order-form" class="form-grid"><div class="field full"><label>Service</label><select id="service-select" required></select></div><div id="service-info" class="field full hide"><label>Service details</label><div id="service-copy" class="card" style="background:#f5f8f4"></div></div><div class="field full"><label>Target link</label><input id="link" type="url" placeholder="https://instagram.com/..." required></div><div class="field"><label>Quantity</label><input id="quantity" type="number" min="1" required></div><div class="field"><label>Estimated price</label><div class="price" id="estimate">₹0.00</div></div><div class="field full"><button class="btn btn-primary">Place order</button></div></form></div></div><div data-view="profile" class="hide"><div class="card"><h2>Profile</h2><p class="sub">${''}</p><p><strong id="profile-email"></strong></p></div></div></section></main></div><div class="toast"></div><script src="/js/app.js"></script></body></html>
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>SMM Vault Panel</title>
+    <meta
+      name="description"
+      content="SMM Vault is a premium social media marketing panel for reliable campaign delivery, clear pricing, and order control."
+    />
+    <meta property="og:title" content="SMM Vault Panel" />
+    <meta
+      property="og:description"
+      content="Manage social media marketing campaigns with SMM Vault."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://website.com/images/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SMM Vault Panel" />
+    <meta name="twitter:image" content="https://website.com/images/og-image.svg" />
+    <link rel="canonical" href="https://website.com/index.html" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/seo.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <div class="brand">SMM<span>VAULT</span></div>
+        <nav class="nav">
+          <a href="#" data-go="dashboard">Overview</a><a href="#" data-go="neworder">New order</a
+          ><a href="#" data-go="services">Services</a><a href="#" data-go="orders">My orders</a
+          ><a href="#" data-go="wallet">Wallet</a><a href="#" data-go="profile">Profile</a>
+        </nav>
+        <button onclick="logout()" class="btn btn-quiet" style="margin-top: auto">Log out</button>
+      </aside>
+      <main class="main">
+        <header class="top">
+          <button id="mobile-menu" class="btn btn-quiet mobile-menu">Menu</button>
+          <div>
+            <strong id="user-name">Loading...</strong>
+            <div class="stat-label">Customer workspace</div>
+          </div>
+          <div class="badge">Live account</div>
+        </header>
+        <section class="content">
+          <p class="eyebrow">SMM Vault / <span id="page-title">Overview</span></p>
+          <h1 class="title" id="page-title-copy">Welcome back.</h1>
+          <p class="sub" id="page-sub">Your command center for the day.</p>
+          <div data-view="dashboard">
+            <div class="grid stats">
+              <div class="card">
+                <div class="stat-label">Wallet balance</div>
+                <div class="stat-value stat-accent" id="balance">₹0.00</div>
+              </div>
+              <div class="card">
+                <div class="stat-label">Total orders</div>
+                <div class="stat-value" id="order-count">0</div>
+              </div>
+              <div class="card">
+                <div class="stat-label">In progress</div>
+                <div class="stat-value" id="pending-count">0</div>
+              </div>
+              <div class="card">
+                <div class="stat-label">Account health</div>
+                <div class="stat-value">Good</div>
+              </div>
+            </div>
+            <div class="actions" style="margin-bottom: 25px">
+              <button class="btn btn-primary" data-go="neworder">+ New order</button
+              ><button class="btn btn-quiet" data-go="wallet">Add funds</button
+              ><button class="btn btn-quiet" data-go="orders">View orders</button>
+            </div>
+            <div class="card">
+              <div class="section-head">
+                <h2>Recent orders</h2>
+                <a href="#" data-go="orders">View all</a>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Order</th>
+                      <th>Service</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-orders"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div data-view="services" class="hide">
+            <div id="service-grid" class="grid two"></div>
+          </div>
+          <div data-view="orders" class="hide">
+            <div class="card table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order</th>
+                    <th>Service</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table"></tbody>
+              </table>
+            </div>
+          </div>
+          <div data-view="wallet" class="hide">
+            <div class="grid stats">
+              <div class="card">
+                <div class="stat-label">Available balance</div>
+                <div class="stat-value stat-accent" id="wallet-balance">₹0.00</div>
+              </div>
+              <div class="card">
+                <div class="stat-label">Total deposited</div>
+                <div class="stat-value" id="deposited">₹0.00</div>
+              </div>
+              <div class="card">
+                <div class="stat-label">Total spent</div>
+                <div class="stat-value" id="spent">₹0.00</div>
+              </div>
+            </div>
+            <div class="card table-wrap">
+              <div class="section-head">
+                <h2>Transactions</h2>
+                <button
+                  class="btn btn-primary"
+                  onclick="toast('Payment setup required for live deposits')"
+                >
+                  Add funds
+                </button>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody id="transactions-table"></tbody>
+              </table>
+            </div>
+          </div>
+          <div data-view="neworder" class="hide">
+            <div class="card">
+              <form id="order-form" class="form-grid">
+                <div class="field full">
+                  <label>Service</label
+                  ><select id="service-select" required></select>
+                </div>
+                <div id="service-info" class="field full hide">
+                  <label>Service details</label>
+                  <div id="service-copy" class="card" style="background: #f5f8f4"></div>
+                </div>
+                <div class="field full">
+                  <label>Target link</label
+                  ><input id="link" type="url" placeholder="https://instagram.com/..." required />
+                </div>
+                <div class="field">
+                  <label>Quantity</label><input id="quantity" type="number" min="1" required />
+                </div>
+                <div class="field">
+                  <label>Estimated price</label>
+                  <div class="price" id="estimate">₹0.00</div>
+                </div>
+                <div class="field full"><button class="btn btn-primary">Place order</button></div>
+              </form>
+            </div>
+          </div>
+          <div data-view="profile" class="hide">
+            <div class="card">
+              <h2>Profile</h2>
+              <p class="sub">${''}</p>
+              <p><strong id="profile-email"></strong></p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast"></div>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin · SMM Vault</title>
+    <meta
+      name="description"
+      content="SMM Vault is a premium social media marketing panel for reliable campaign delivery, clear pricing, and order control."
+    />
+    <meta property="og:title" content="Admin · SMM Vault" />
+    <meta
+      property="og:description"
+      content="Manage social media marketing campaigns with SMM Vault."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://website.com/images/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Admin · SMM Vault" />
+    <meta name="twitter:image" content="https://website.com/images/og-image.svg" />
+    <link rel="canonical" href="https://website.com/admin/index.html" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/seo.js"></script>
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="side">
+        <div class="brand">SMM<span>VAULT</span></div>
+        <p class="eyebrow" style="margin-top: 40px">Operations</p>
+        <nav class="nav">
+          <a class="active" href="#">Dashboard</a><a href="#" onclick="sync(event)">Sync services</a
+          ><a href="/index.html">User panel</a><a href="#" onclick="logout()">Log out</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <header class="top">
+          <strong>Admin control room</strong><span class="badge">Restricted</span>
+        </header>
+        <section class="content">
+          <p class="eyebrow">Admin / Dashboard</p>
+          <h1 class="title">The panel, at a glance.</h1>
+          <p class="sub">Monitor demand, margin, and provider health.</p>
+          <div class="grid stats">
+            <div class="card">
+              <div class="stat-label">Total users</div>
+              <div id="users" class="stat-value">—</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Orders</div>
+              <div id="orders" class="stat-value">—</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Revenue</div>
+              <div id="revenue" class="stat-value stat-accent">—</div>
+            </div>
+            <div class="card">
+              <div class="stat-label">Gross profit</div>
+              <div id="profit" class="stat-value">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <h2>Provider catalog</h2>
+              <button class="btn btn-primary" onclick="sync(event)">Sync services</button>
+            </div>
+            <p class="sub">
+              Sync updates current services and marks disappeared provider services inactive without
+              touching order history.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div class="toast"></div>
+    <script>
+      const t = localStorage.getItem('smm_token');
+      const money = (n) =>
+        `₹${Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+      async function api(u, o = {}) {
+        const r = await fetch(u, {
+          ...o,
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${t}` },
+        });
+        const d = await r.json();
+        if (!r.ok) throw Error(d.error);
+        return d;
+      }
+      async function init() {
+        try {
+          const x = await api('/api/admin/stats');
+          document.querySelector('#users').textContent = x.users.total;
+          document.querySelector('#orders').textContent = x.orders.total;
+          document.querySelector('#revenue').textContent = money(x.orders.revenue);
+          document.querySelector('#profit').textContent = money(x.orders.profit);
+        } catch (e) {
+          if (e.message.includes('Authentication')) location.href = '/login.html';
+          toast(e.message);
+        }
+      }
+      async function sync(e) {
+        e.preventDefault();
+        try {
+          const x = await api('/api/admin/services/sync', { method: 'POST' });
+          toast(`${x.count} services synced`);
+        } catch (x) {
+          toast(x.message);
+        }
+      }
+      function toast(x) {
+        const e = document.querySelector('.toast');
+        e.textContent = x;
+        e.style.display = 'block';
+        setTimeout(() => (e.style.display = 'none'), 3000);
+      }
+      function logout() {
+        localStorage.removeItem('smm_token');
+        location.href = '/login.html';
+      }
+      init();
+    </script>
+  </body>
+</html>

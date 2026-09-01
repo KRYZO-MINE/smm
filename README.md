@@ -54,7 +54,7 @@ Step 3: Connection String Copy Karo
 ├─ Project dashboard khulo
 ├─ "Connection string" dekho
 ├─ "Connection URI" copy karo (milegga kuch is tarah:)
-│  postgresql://user:password@host.neon.tech/smm_panel
+│  postgresql://neondb_owner:npg_EyJ9bBqz0uLs@ep-icy-sky-aylekzof-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ├─ Ye string secure rakhna (IMPORTANT!)
 └─ Neon dashboard mein save hai, baad mein bhi dekh sakte ho
 

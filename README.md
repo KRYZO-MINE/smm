@@ -36,348 +36,364 @@ Iss file mein samjhenge ke iss project ko **kaise deploy** karna hai aur **har f
 
 **DETAILED STEPS WITH NEON.TECH:**
 
-```
-Step 1: Account Create Karo
-├─ https://neon.tech par jao
-├─ "Sign Up" button click karo
-├─ GitHub se login karo (or Email)
-└─ Verify email
+**Step 1: Account Create Karo**
+1. https://neon.tech par jao
+2. "Sign Up" button click karo
+3. GitHub se login karo (or Email)
+4. Verify email
 
-Step 2: First Project Create Karo
-├─ "Create Project" button click karo (jaise screenshot mein dikh raha hai)
-├─ Project name: smm_panel
-├─ Region: AWS US East 2 (Ohio) - ya apka region
-├─ Postgres database ON rakhna (checked)
-└─ "Create project" button dabao
+**Step 2: First Project Create Karo**
+1. "Create Project" button click karo (jaise screenshot mein dikh raha hai)
+2. Project name set karo: `smm_panel`
+3. Region select karo: `AWS US East 2 (Ohio)` (ya apka region)
+4. Postgres database ON rakhna (checked)
+5. "Create project" button dabao
 
-Step 3: Connection String Copy Karo
-├─ Project dashboard khulo
-├─ "Connection string" dekho
-├─ "Connection URI" copy karo (milegga kuch is tarah:)
-│  postgresql://neondb_owner:npg_EyJ9bBqz0uLs@ep-icy-sky-aylekzof-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-├─ Ye string secure rakhna (IMPORTANT!)
-└─ Neon dashboard mein save hai, baad mein bhi dekh sakte ho
+**Step 3: Connection String Copy Karo**
+1. Project dashboard khulo
+2. "Connection string" section dekho
+3. "Connection URI" copy karo (milegga kuch is tarah):
+   ```
+   postgresql://neondb_owner:npg_EyJ9bBqz0uLs@ep-icy-sky-aylekzof-pooler.c-5.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+   ```
+4. Ye string secure rakhna (IMPORTANT!)
+5. Neon dashboard mein save hai, baad mein bhi dekh sakte ho
 
-Step 4: SQL Editor Open Karo (Neon mein)
-├─ Neon Dashboard → SQL Editor (left sidebar)
-├─ "New query" button click karo
-└─ Ready for schema import
+**Step 4: SQL Editor Open Karo (Neon mein)**
+1. Neon Dashboard → SQL Editor (left sidebar)
+2. "New query" button click karo
+3. Ready for schema import
 
-Step 5: Database Schema Import Karo
-├─ Local mein database/schema.sql file kholo
-├─ Sab code copy karo (Ctrl+A, Ctrl+C)
-├─ Neon SQL Editor mein paste karo
-├─ "Execute query" button dabao
-└─ Schema automatically create ho jayega!
+**Step 5: Database Schema Import Karo**
+1. Local mein `database/schema.sql` file kholo
+2. Sab code select aur copy karo (Ctrl+A, Ctrl+C)
+3. Neon SQL Editor mein paste karo
+4. "Execute query" button dabao
+5. Schema automatically create ho jayega!
 
-Step 6: Verify Karo
-├─ Neon Dashboard → "Tables" section dekho
-├─ Ye tables dikhne chahiye:
-│  ├─ users
-│  ├─ orders
-│  ├─ transactions
-│  └─ admin_logs
-└─ Sab present hain? ✅ Database ready!
-```
-
-→ Database ready! ✅
-```
+**Step 6: Verify Karo**
+1. Neon Dashboard → "Tables" section dekho
+2. Ye tables dikhne chahiye:
+   - `users`
+   - `orders`
+   - `transactions`
+   - `admin_logs`
+   - `wallets`
+   - `categories`
+   - `services`
+   - `support_tickets`
+   - `admin_logs`
+3. Sab present hain? ✅ **Database ready!**
 
 ### **Day 2 - Environment Variables (10 min)**
-```
-Step 1: JWT_SECRET Generate Karo
-├─ Terminal/PowerShell open karo
-├─ Ye command chalao:
-│  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-├─ Output copy karo (long string)
-└─ Ye hai aapka JWT_SECRET (keep it safe!)
 
-Step 2: Vercel Dashboard Open Karo
-├─ https://vercel.com par jao
-├─ Apna project select karo (jismein frontend live hai)
-├─ "Settings" tab click karo (top mein)
-└─ Left sidebar mein "Environment Variables" click karo
+**Step 1: JWT_SECRET Generate Karo**
+1. Terminal/PowerShell open karo
+2. Ye command chalao:
+   ```
+   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+   ```
+3. Output copy karo (long string)
+4. Ye hai aapka JWT_SECRET (keep it safe!)
 
-Step 3: Add Variables (One by One)
-│
-├─ VARIABLE 1: DATABASE_URL
-│  ├─ Name: DATABASE_URL
-│  ├─ Value: (Neon se copy kiye hue connection string paste karo)
-│  │        postgresql://user:password@host.neon.tech/smm_panel
-│  ├─ Environments: Production, Preview, Development (sab select karo)
-│  └─ "Save" button dabao
-│
-├─ VARIABLE 2: JWT_SECRET
-│  ├─ Name: JWT_SECRET
-│  ├─ Value: (Step 1 mein generate kiye hue string paste karo)
-│  ├─ Environments: sab select karo
-│  └─ "Save" button dabao
-│
-├─ VARIABLE 3: NODE_ENV
-│  ├─ Name: NODE_ENV
-│  ├─ Value: production
-│  ├─ Environments: Production (important!)
-│  └─ "Save" button dabao
-│
-└─ VARIABLE 4: DEMO_MODE (optional)
-   ├─ Name: DEMO_MODE
-   ├─ Value: false (agar SMMVAULT_API_KEY hai)
-   │      OR true (agar demo mode chahiye)
-   ├─ Environments: sab select karo
-   └─ "Save" button dabao
+**Step 2: Vercel Dashboard Open Karo**
+1. https://vercel.com par jao
+2. Apna project select karo (jismein frontend live hai)
+3. "Settings" tab click karo (top mein)
+4. Left sidebar mein "Environment Variables" click karo
 
-Step 4: Redeploy Karo (IMPORTANT!)
-├─ Vercel Dashboard → Deployments tab
-├─ Recent deployment dekho
-├─ "..." (three dots) click karo
-├─ "Redeploy" option select karo
-└─ Wait 2-3 minutes, deployment complete hone tak
+**Step 3: Add Variables (One by One)**
 
-Result:
-├─ Environment variables set ho gaye ✅
-├─ Backend ko database access mil gaya ✅
-├─ Backend ready for API calls ✅
-└─ Project live with new variables ✅
-```
+**VARIABLE 1: DATABASE_URL**
+- Name: `DATABASE_URL`
+- Value: (Neon se copy kiye hue connection string paste karo)
+  ```
+  postgresql://user:password@host.neon.tech/smm_panel
+  ```
+- Environments: Production, Preview, Development (sab select karo)
+- Click: "Save" button
 
-→ Backend ready! ✅
-```
+**VARIABLE 2: JWT_SECRET**
+- Name: `JWT_SECRET`
+- Value: (Step 1 mein generate kiye hue string paste karo)
+- Environments: sab select karo
+- Click: "Save" button
+
+**VARIABLE 3: NODE_ENV**
+- Name: `NODE_ENV`
+- Value: `production`
+- Environments: Production (important!)
+- Click: "Save" button
+
+**VARIABLE 4: DEMO_MODE** (optional)
+- Name: `DEMO_MODE`
+- Value: `false` (agar SMMVAULT_API_KEY hai) OR `true` (agar demo mode chahiye)
+- Environments: sab select karo
+- Click: "Save" button
+
+**Step 4: Redeploy Karo (IMPORTANT!)**
+1. Vercel Dashboard → Deployments tab
+2. Recent deployment dekho
+3. "..." (three dots) click karo
+4. "Redeploy" option select karo
+5. Wait 2-3 minutes, deployment complete hone tak
+
+**Result:** ✅
+- Environment variables set ho gaye ✅
+- Backend ko database access mil gaya ✅
+- Backend ready for API calls ✅
+- Project live with new variables ✅
 
 ### **Day 3 - Backend Code Push (15 min)**
-```
-Step 1: .gitignore File Banao (agar nahi hai)
-├─ Local project folder mein .gitignore file create karo
-├─ Content:
-│  .env
-│  node_modules/
-│  .DS_Store
-│  *.log
-├─ Save karo
-└─ Ye file .env ko GitHub par push nahi hone dega
 
-Step 2: Local mein Code Check Karo
-├─ Verify: server/server.js exist karta hai?
-├─ Verify: server/services/smmvault.js exist karta hai?
-├─ Verify: server/jobs/ folder exist karta hai?
-├─ Verify: database/schema.sql exist karta hai?
-├─ Verify: package.json exist karta hai?
-└─ Sab present hain? ✅ Continue!
+**Step 1: .gitignore File Banao (agar nahi hai)**
+1. Local project folder mein `.gitignore` file create karo
+2. Content add karo:
+   ```
+   .env
+   node_modules/
+   .DS_Store
+   *.log
+   ```
+3. Save karo
+4. Ye file `.env` ko GitHub par push nahi hone dega
 
-Step 3: Git Status Check Karo
-├─ Terminal/PowerShell open karo
-├─ Project folder mein jao:
-│  cd c:\Users\Admin\Documents\SMM
-├─ Command chalao:
-│  git status
-├─ Output dekho:
-│  ├─ "nothing to commit" = sab already pushed
-│  ├─ "Changes not staged" = naye changes hain
-│  └─ "Untracked files" = nyi files hain
-└─ Next step ke liye continue
+**Step 2: Local mein Code Check Karo**
+1. Verify: `server/server.js` exist karta hai?
+2. Verify: `server/services/smmvault.js` exist karta hai?
+3. Verify: `server/jobs/` folder exist karta hai?
+4. Verify: `database/schema.sql` exist karta hai?
+5. Verify: `package.json` exist karta hai?
+6. Sab present hain? ✅ Continue!
 
-Step 4: Git Add - Sab Files Add Karo
-├─ Terminal mein chalao:
-│  git add .
-├─ Ye kya karta hai:
-│  ├─ Modified files add karta hai
-│  ├─ New files add karta hai
-│  ├─ .gitignore wali files exclude karta hai (.env, node_modules)
-│  └─ Sab ready for commit
-└─ Continue!
+**Step 3: Git Status Check Karo**
+1. Terminal/PowerShell open karo
+2. Project folder mein jao:
+   ```
+   cd c:\Users\Admin\Documents\SMM
+   ```
+3. Command chalao:
+   ```
+   git status
+   ```
+4. Output dekho:
+   - "nothing to commit" = sab already pushed
+   - "Changes not staged" = naye changes hain
+   - "Untracked files" = nyi files hain
+5. Next step ke liye continue
 
-Step 5: Git Commit - Message Add Karo
-├─ Terminal mein chalao:
-│  git commit -m "Add backend server and database schema"
-├─ Ye message kya convey karta hai:
-│  ├─ Clear description of what's changing
-│  └─ Future mein reference ke liye useful
-└─ Output: "[main xxx] Add backend server..." milegga
+**Step 4: Git Add - Sab Files Add Karo**
+1. Terminal mein chalao:
+   ```
+   git add .
+   ```
+2. Ye kya karta hai:
+   - Modified files add karta hai
+   - New files add karta hai
+   - .gitignore wali files exclude karta hai (.env, node_modules)
+   - Sab ready for commit
+3. Continue!
 
-Step 6: Git Push - GitHub par Upload Karo
-├─ Terminal mein chalao:
-│  git push origin main
-├─ Ye kya karta hai:
-│  ├─ Local commits GitHub par upload hota hai
-│  ├─ Vercel automatically detect karta hai
-│  ├─ Vercel automatically deployment start karta hai
-│  └─ 2-3 minutes mein live ho jayega
-├─ Output: "master -> master" ya "main -> main" milegga
-└─ Success! ✅
+**Step 5: Git Commit - Message Add Karo**
+1. Terminal mein chalao:
+   ```
+   git commit -m "Add backend server and database schema"
+   ```
+2. Ye message kya convey karta hai:
+   - Clear description of what's changing
+   - Future mein reference ke liye useful
+3. Output milegga: `[main xxx] Add backend server...`
 
-Step 7: Vercel Deployment Check Karo
-├─ https://vercel.com → Deployments tab
-├─ Recent deployment dekho
-├─ Status check karo:
-│  ├─ "Ready" = ✅ Deployed successfully!
-│  ├─ "Building" = ⏳ Wait 2-3 minutes
-│  ├─ "Failed" = ❌ Check logs, debug
-│  └─ "Error" = ❌ Contact support
-├─ Green checkmark dekho? ✅ Backend live!
-└─ Deployment URL copy karo (jaise https://your-project.vercel.app)
-```
+**Step 6: Git Push - GitHub par Upload Karo**
+1. Terminal mein chalao:
+   ```
+   git push origin main
+   ```
+2. Ye kya karta hai:
+   - Local commits GitHub par upload hota hai
+   - Vercel automatically detect karta hai
+   - Vercel automatically deployment start karta hai
+   - 2-3 minutes mein live ho jayega
+3. Output milegga: "master -> master" ya "main -> main"
+4. Success! ✅
 
-→ Full project live! ✅
-```
+**Step 7: Vercel Deployment Check Karo**
+1. https://vercel.com → Deployments tab
+2. Recent deployment dekho
+3. Status check karo:
+   - "Ready" = ✅ Deployed successfully!
+   - "Building" = ⏳ Wait 2-3 minutes
+   - "Failed" = ❌ Check logs, debug
+   - "Error" = ❌ Contact support
+4. Green checkmark dekho? ✅ Backend live!
+5. Deployment URL copy karo (jaise https://your-project.vercel.app)
+
+**→ Full project live! ✅**
 
 ### **Day 4 - Testing & Verification (20 min)**
-```
-Step 1: Website Open Karo
-├─ Browser mein jao: https://your-project.vercel.app
-├─ Page load hona chahiye in 2-3 seconds
-├─ Logo aur homepage visible hona chahiye
-└─ ✅ Frontend working!
 
-Step 2: Register Karo (New Account)
-├─ "Register" button click karo ya /register page par jao
-├─ Form fill karo:
-│  ├─ Name: Test User
-│  ├─ Email: test@example.com
-│  ├─ Password: TestPassword@123
-│  └─ Submit button click karo
-├─ Expected:
-│  ├─ "Registration successful" message
-│  ├─ Automatically login ho jana
-│  └─ Dashboard page display hona
-├─ Error? → Check:
-│  ├─ DATABASE_URL set hai?
-│  ├─ Database schema imported?
-│  ├─ Neon connection working?
-│  └─ Vercel logs check karo (Deployments → Functions)
-└─ Success? ✅ Database connected!
+**Step 1: Website Open Karo**
+1. Browser mein jao: https://your-project.vercel.app
+2. Page load hona chahiye in 2-3 seconds
+3. Logo aur homepage visible hona chahiye
+4. ✅ Frontend working!
 
-Step 3: Login Karo (Test Account)
-├─ /login page par jao ya logout karo pehle
-├─ Credentials enter karo:
-│  ├─ Email: test@example.com
-│  ├─ Password: TestPassword@123
-├─ Submit karo
-├─ Expected:
-│  ├─ Auth token generated hona
-│  ├─ Dashboard page show hona
-│  ├─ Sidebar mein user name dikhai dena
-│  └─ Profile page accessible hona
-├─ Error? → Check:
-│  ├─ JWT_SECRET set hai Vercel mein?
-│  ├─ Password correct hai?
-│  ├─ User record DB mein hai?
-│  └─ API logs check karo
-└─ Success? ✅ Authentication working!
+**Step 2: Register Karo (New Account)**
+1. "Register" button click karo ya `/register` page par jao
+2. Form fill karo:
+   - Name: `Test User`
+   - Email: `test@example.com`
+   - Password: `TestPassword@123`
+3. Submit button click karo
+4. Expected:
+   - "Registration successful" message
+   - Automatically login ho jana
+   - Dashboard page display hona
+5. Error? → Check:
+   - DATABASE_URL set hai?
+   - Database schema imported?
+   - Neon connection working?
+   - Vercel logs check karo (Deployments → Functions)
+6. Success? ✅ Database connected!
 
-Step 4: Admin Access Check Karo
-├─ /admin/index.html par jao
-├─ Expected behavior:
-│  ├─ Test user (non-admin): Redirected to dashboard
-│  ├─ Admin user: Admin panel visible
-├─ Admin nahi ho test user?
-│  ├─ Neon SQL Editor open karo
-│  ├─ Query run karo:
-│     UPDATE users SET role = 'admin' WHERE email = 'test@example.com';
-│  ├─ Logout aur login karo dobara
-│  └─ Ab admin panel visible hona chahiye
-└─ Success? ✅ Admin access working!
+**Step 3: Login Karo (Test Account)**
+1. `/login` page par jao ya logout karo pehle
+2. Credentials enter karo:
+   - Email: `test@example.com`
+   - Password: `TestPassword@123`
+3. Submit karo
+4. Expected:
+   - Auth token generated hona
+   - Dashboard page show hona
+   - Sidebar mein user name dikhai dena
+   - Profile page accessible hona
+5. Error? → Check:
+   - JWT_SECRET set hai Vercel mein?
+   - Password correct hai?
+   - User record DB mein hai?
+   - API logs check karo
+6. Success? ✅ Authentication working!
 
-Step 5: API Endpoints Test Karo
-├─ Browser Console open karo (F12 → Console tab)
-├─ Test registration API:
-│  fetch('https://your-project.vercel.app/api/auth/register', {
-│    method: 'POST',
-│    headers: { 'Content-Type': 'application/json' },
-│    body: JSON.stringify({
-│      name: 'API Test User',
-│      email: 'apitest@example.com',
-│      password: 'TestPass@123'
-│    })
-│  }).then(r => r.json()).then(d => console.log(d))
-├─ Expected response:
-│  {
-│    "id": 2,
-│    "name": "API Test User",
-│    "email": "apitest@example.com",
-│    "role": "user",
-│    "status": "active"
-│  }
-├─ Error response? → Check:
-│  ├─ Database connection
-│  ├─ API server running
-│  ├─ Request body valid
-│  └─ CORS headers set (helmet.js)
-└─ Success? ✅ API working!
+**Step 4: Admin Access Check Karo**
+1. `/admin/index.html` par jao
+2. Expected behavior:
+   - Test user (non-admin): Redirected to dashboard
+   - Admin user: Admin panel visible
+3. Admin nahi ho test user?
+   - Neon SQL Editor open karo
+   - Query run karo:
+     ```sql
+     UPDATE users SET role = 'admin' WHERE email = 'test@example.com';
+     ```
+   - Logout aur login karo dobara
+   - Ab admin panel visible hona chahiye
+4. Success? ✅ Admin access working!
 
-Step 6: Database Verify Karo (Neon Console)
-├─ Neon Dashboard → SQL Editor
-├─ Query run karo:
-│  SELECT * FROM users;
-├─ Expected:
-│  ├─ Registered users dikhai deni chahiye
-│  ├─ Email, name, role columns
-│  ├─ Password hashed format mein (bcrypt)
-│  └─ Multiple rows agar multiple users register kiye
-├─ No users dikhai de rahe?
-│  ├─ Database connection fail ho sakta hai
-│  ├─ Schema import incomplete
-│  └─ Vercel logs check karo
-└─ Success? ✅ Database persistent!
+**Step 5: API Endpoints Test Karo**
+1. Browser Console open karo (F12 → Console tab)
+2. Test registration API:
+   ```javascript
+   fetch('https://your-project.vercel.app/api/auth/register', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({
+       name: 'API Test User',
+       email: 'apitest@example.com',
+       password: 'TestPass@123'
+     })
+   }).then(r => r.json()).then(d => console.log(d))
+   ```
+3. Expected response:
+   ```json
+   {
+     "id": 2,
+     "name": "API Test User",
+     "email": "apitest@example.com",
+     "role": "user",
+     "status": "active"
+   }
+   ```
+4. Error response? → Check:
+   - Database connection
+   - API server running
+   - Request body valid
+   - CORS headers set (helmet.js)
+5. Success? ✅ API working!
 
-Step 7: Performance Check Karo
-├─ Page load time: 2-3 seconds (acceptable)
-├─ API response time: < 1 second (good)
-├─ Images loading: visible hona chahiye
-├─ Styling applied: CSS working hona chahiye
-├─ Console errors: nahi hone chahiye
-└─ All good? ✅ Production ready!
-```
+**Step 6: Database Verify Karo (Neon Console)**
+1. Neon Dashboard → SQL Editor
+2. Query run karo:
+   ```sql
+   SELECT * FROM users;
+   ```
+3. Expected:
+   - Registered users dikhai deni chahiye
+   - Email, name, role columns
+   - Password hashed format mein (bcrypt)
+   - Multiple rows agar multiple users register kiye
+4. No users dikhai de rahe?
+   - Database connection fail ho sakta hai
+   - Schema import incomplete
+   - Vercel logs check karo
+5. Success? ✅ Database persistent!
 
-→ Production ready! ✅
+**Step 7: Performance Check Karo**
+1. Page load time: 2-3 seconds (acceptable)
+2. API response time: < 1 second (good)
+3. Images loading: visible hona chahiye
+4. Styling applied: CSS working hona chahiye
+5. Console errors: nahi hone chahiye
+6. All good? ✅ Production ready!
+
+**→ Production ready! ✅**
 
 ---
 
 ## ✅ FINAL CHECKLIST - All Systems Go!
 
-```
-FRONTEND ✅
-├─ [ ] Homepage loads
-├─ [ ] Navigation working
-├─ [ ] Styling applied
-├─ [ ] Images visible
-└─ [ ] No console errors
+**FRONTEND ✅**
+- [ ] Homepage loads
+- [ ] Navigation working
+- [ ] Styling applied
+- [ ] Images visible
+- [ ] No console errors
 
-BACKEND ✅
-├─ [ ] API endpoints responding
-├─ [ ] Register endpoint working
-├─ [ ] Login endpoint working
-├─ [ ] Error handling proper
-└─ [ ] Logs clear (no errors)
+**BACKEND ✅**
+- [ ] API endpoints responding
+- [ ] Register endpoint working
+- [ ] Login endpoint working
+- [ ] Error handling proper
+- [ ] Logs clear (no errors)
 
-DATABASE ✅
-├─ [ ] Connection successful
-├─ [ ] All tables created
-├─ [ ] Data persisting
-├─ [ ] Queries executing
-└─ [ ] No corruption
+**DATABASE ✅**
+- [ ] Connection successful
+- [ ] All tables created
+- [ ] Data persisting
+- [ ] Queries executing
+- [ ] No corruption
 
-AUTHENTICATION ✅
-├─ [ ] Registration working
-├─ [ ] Login working
-├─ [ ] JWT tokens generated
-├─ [ ] Admin role working
-└─ [ ] Logout working
+**AUTHENTICATION ✅**
+- [ ] Registration working
+- [ ] Login working
+- [ ] JWT tokens generated
+- [ ] Admin role working
+- [ ] Logout working
 
-DEPLOYMENT ✅
-├─ [ ] Environment variables set
-├─ [ ] Vercel showing "Ready"
-├─ [ ] GitHub synced
-├─ [ ] Logs clean
-└─ [ ] No warnings
+**DEPLOYMENT ✅**
+- [ ] Environment variables set
+- [ ] Vercel showing "Ready"
+- [ ] GitHub synced
+- [ ] Logs clean
+- [ ] No warnings
 
-SECURITY ✅
-├─ [ ] .env not in GitHub
-├─ [ ] JWT_SECRET strong
-├─ [ ] DATABASE_URL hidden
-├─ [ ] HTTPS enabled (Vercel default)
-└─ [ ] Rate limiting active
+**SECURITY ✅**
+- [ ] .env not in GitHub
+- [ ] JWT_SECRET strong
+- [ ] DATABASE_URL hidden
+- [ ] HTTPS enabled (Vercel default)
+- [ ] Rate limiting active
 
-🎉 ALL SYSTEMS GO! PRODUCTION LIVE! 🎉
-```
+🎉 **ALL SYSTEMS GO! PRODUCTION LIVE!** 🎉
 
 ---
 
@@ -491,89 +507,87 @@ SECURITY ✅
 Aapke screenshot ke according:
 
 **Screen 1: Neon Welcome Page**
-```
+
 Website: https://neon.tech
 
 Ye page dekhoge:
-├─ "Welcome to Neon" heading
-├─ "Now, let's create your first project" message
-├─ Project name field (Default: "Arigato")
-│  └─ Change karo to: "smm_panel"
-├─ Region dropdown (Default: "AWS US East 2 (Ohio)")
-│  └─ Apne region select karo (Ohio theek hai)
-├─ Services section:
-│  ├─ ✅ Postgres database (Enable rahega)
-│  ├─ ◻ Object storage (Disable rakho)
-│  ├─ ◻ Functions (Disable rakho)
-│  ├─ ◻ AI gateway (Disable rakho)
-│  └─ ◻ Neon Auth (Disable rakho)
-└─ "Create project" button (blue button bottom-right)
-```
+- "Welcome to Neon" heading
+- "Now, let's create your first project" message
+- Project name field (Default: "Arigato")
+  - Change karo to: `smm_panel`
+- Region dropdown (Default: "AWS US East 2 (Ohio)")
+  - Apne region select karo (Ohio theek hai)
+- Services section:
+  - ✅ Postgres database (Enable rahega)
+  - ◻ Object storage (Disable rakho)
+  - ◻ Functions (Disable rakho)
+  - ◻ AI gateway (Disable rakho)
+  - ◻ Neon Auth (Disable rakho)
+- "Create project" button (blue button bottom-right)
 
 **Screen 2: Project Created Successfully**
-```
+
 Ye page load hoga after "Create project" click:
-├─ Dashboard loads
-├─ Database "smm_panel" created
-├─ Connection details milenge:
-│  ├─ Host: xxxxxxxx.neon.tech
-│  ├─ Port: 5432
-│  ├─ Database: smm_panel
-│  ├─ User: neondb_owner
-│  └─ Password: xxxxxxxxxxxxxxxx
-└─ Connection String:
-   postgresql://neondb_owner:password@host.neon.tech/smm_panel
-```
+- Dashboard loads
+- Database `smm_panel` created
+- Connection details milenge:
+  - Host: `xxxxxxxx.neon.tech`
+  - Port: `5432`
+  - Database: `smm_panel`
+  - User: `neondb_owner`
+  - Password: `xxxxxxxxxxxxxxxx`
+- Connection String:
+  ```
+  postgresql://neondb_owner:password@host.neon.tech/smm_panel
+  ```
 
 **Screen 3: Accessing SQL Editor**
-```
+
 Dashboard mein left sidebar:
-├─ "SQL Editor" option click karo
-├─ New tab khul jayega
-├─ "New query" button click karo
-├─ Blank SQL editor dikhai degga
-└─ Yahan database/schema.sql ka code paste karo
-```
+1. "SQL Editor" option click karo
+2. New tab khul jayega
+3. "New query" button click karo
+4. Blank SQL editor dikhai degga
+5. Yahan `database/schema.sql` ka code paste karo
 
 **Screen 4: Running Schema**
-```
+
 SQL Editor mein:
-├─ database/schema.sql file kholo (Local mein)
-├─ Sab code select karo (Ctrl+A)
-├─ Copy karo (Ctrl+C)
-├─ Neon SQL Editor mein paste karo
-├─ "Execute" or "Run query" button click karo
-├─ Wait for execution...
-└─ Success! ✅ Tables created
-   ├─ users
-   ├─ orders
-   ├─ transactions
-   └─ admin_logs
-```
+1. `database/schema.sql` file kholo (Local mein)
+2. Sab code select karo (Ctrl+A)
+3. Copy karo (Ctrl+C)
+4. Neon SQL Editor mein paste karo
+5. "Execute" or "Run query" button click karo
+6. Wait for execution...
+7. Success! ✅ Tables created
+   - users
+   - orders
+   - transactions
+   - admin_logs
 
 **Screen 5: Verify Tables**
-```
+
 Neon Dashboard:
-├─ Left sidebar mein "Tables" or "Schema" section
-├─ Ye tables visible hone chahiye:
-│  ├─ public.users
-│  ├─ public.orders
-│  ├─ public.transactions
-│  └─ public.admin_logs
-├─ Click karo har table par to see columns
-└─ Structure verify karo schema.sql se match
-```
+1. Left sidebar mein "Tables" or "Schema" section
+2. Ye tables visible hone chahiye:
+   - `public.users`
+   - `public.orders`
+   - `public.transactions`
+   - `public.admin_logs`
+3. Click karo har table par to see columns
+4. Structure verify karo schema.sql se match
 
 **Connection String Save Karo:**
-```
-Neon Dashboard → Connection string section
-├─ "Connection URI" option select karo (not pool)
-├─ String copy karo:
+
+Neon Dashboard → Connection string section:
+1. "Connection URI" option select karo (not pool)
+2. String copy karo:
+   ```
    postgresql://neondb_owner:xxxxx@xxxxx.neon.tech/smm_panel
-├─ Safe place mein save karo (notepad mein)
-├─ Vercel mein DATABASE_URL variable mein paste karogay
-└─ Never share publicly! 🔐
-```
+   ```
+3. Safe place mein save karo (notepad mein)
+4. Vercel mein DATABASE_URL variable mein paste karogay
+5. Never share publicly! 🔐
 
 ---
 

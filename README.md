@@ -95,6 +95,9 @@ Iss file mein samjhenge ke iss project ko **kaise deploy** karna hai aur **har f
    ```
 3. Output copy karo (long string)
 4. Ye hai aapka JWT_SECRET (keep it safe!)
+   ```
+   19ab9fca32e11cd2129cb2af06e5d898f7f61bdd5ef9defd2d65fa930381daec
+   ```
 
 **Step 2: Vercel Dashboard Open Karo**
 1. https://vercel.com par jao

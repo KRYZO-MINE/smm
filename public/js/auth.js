@@ -1,20 +1,35 @@
 async function submitAuth(event, mode) {
   event.preventDefault();
   const form = new FormData(event.target);
+  const errorEl = document.querySelector('#error');
+
   try {
-    const data = await fetch(`/api/auth/${mode}`, {
+    const response = await fetch(`/api/auth/${mode}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(Object.fromEntries(form)),
-    }).then(async (r) => {
-      const x = await r.json();
-      if (!r.ok) throw Error(x.error);
-      return x;
     });
-    localStorage.setItem('smm_token', data.token);
-    location.href = data.user.role === 'admin' ? '/admin/index.html' : '/index.html';
+
+    const text = await response.text();
+    let payload = {};
+
+    if (text) {
+      try {
+        payload = JSON.parse(text);
+      } catch {
+        throw new Error(
+          response.ok
+            ? 'Server returned an invalid response.'
+            : `API error (${response.status}). Make sure the backend is running and the /api/auth/${mode} route is available.`
+        );
+      }
+    }
+
+    if (!response.ok) throw new Error(payload.error || 'Authentication failed');
+    localStorage.setItem('smm_token', payload.token);
+    location.href = payload.user.role === 'admin' ? '/admin/index.html' : '/index.html';
   } catch (e) {
-    document.querySelector('#error').textContent = e.message;
-    document.querySelector('#error').classList.remove('hide');
+    errorEl.textContent = e.message;
+    errorEl.classList.remove('hide');
   }
 }

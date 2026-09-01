@@ -11,7 +11,22 @@ async function api(url, options = {}) {
       ...(token() ? { Authorization: `Bearer ${token()}` } : {}),
     },
   });
-  const data = await res.json().catch(() => ({}));
+
+  const text = await res.text();
+  let data = {};
+
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(
+        res.ok
+          ? 'Server returned an invalid response.'
+          : `Server error (${res.status}). Make sure the backend is running.`
+      );
+    }
+  }
+
   if (!res.ok) throw Error(data.error || 'Request failed');
   return data;
 }

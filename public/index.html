@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>SMM Vault Panel</title>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
     <meta
       name="description"
       content="SMM Vault is a premium social media marketing panel for reliable campaign delivery, clear pricing, and order control."
@@ -14,11 +15,12 @@
       content="Manage social media marketing campaigns with SMM Vault."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://website.com/images/og-image.svg" />
+    <meta property="og:url" content="https://arigato.sharmbazaar.online/index.html" />
+    <meta property="og:image" content="https://arigato.sharmbazaar.online/images/og-image.svg" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="SMM Vault Panel" />
-    <meta name="twitter:image" content="https://website.com/images/og-image.svg" />
-    <link rel="canonical" href="https://website.com/index.html" />
+    <meta name="twitter:image" content="https://arigato.sharmbazaar.online/images/og-image.svg" />
+    <link rel="canonical" href="https://arigato.sharmbazaar.online/index.html" />
     <link rel="stylesheet" href="/css/style.css" />
     <script src="/js/seo.js"></script>
   </head>
@@ -175,8 +177,12 @@
           <div data-view="profile" class="hide">
             <div class="card">
               <h2>Profile</h2>
-              <p class="sub">${''}</p>
-              <p><strong id="profile-email"></strong></p>
+              <p class="sub">Your account details and access status.</p>
+              <div class="profile-details">
+                <p><span class="stat-label">Name</span><strong id="profile-name">Loading...</strong></p>
+                <p><span class="stat-label">Email</span><strong id="profile-email">Loading...</strong></p>
+                <p><span class="stat-label">Account status</span><strong id="profile-status">Loading...</strong></p>
+              </div>
             </div>
           </div>
         </section>

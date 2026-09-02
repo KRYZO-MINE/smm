@@ -91,7 +91,8 @@ async function loadDashboard() {
 function row(o) {
   return `<tr><td>#${o.id}</td><td>${o.service_name_snapshot}</td><td>${money(o.customer_price)}</td><td><span class="badge ${o.status !== 'Completed' ? 'pending' : ''}">${o.status}</span></td></tr>`;
 }
-const platformOrder = ['Instagram', 'Facebook', 'TikTok', 'YouTube', 'Telegram', 'WhatsApp', 'Twitter', 'Threads', 'LinkedIn', 'Discord'];
+const platformOrder = ['Instagram', 'Telegram', 'Facebook', 'TikTok', 'YouTube', 'WhatsApp', 'Twitter', 'Threads', 'LinkedIn', 'Discord'];
+const serviceTypeOrder = ['Followers', 'Likes', 'Comments', 'Views', 'Members', 'Subscribers', 'Shares', 'Reactions', 'Story views', 'Other services'];
 function escapeHtml(value) {
   return String(value || '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
 }
@@ -105,6 +106,21 @@ function cleanServiceText(value) {
 function platformFor(service) {
   const source = `${service.category || ''} ${service.name || ''}`.toLowerCase();
   return platformOrder.find((platform) => source.includes(platform.toLowerCase())) || 'Other platforms';
+}
+function serviceTypeFor(service) {
+  const source = `${service.category || ''} ${service.name || ''}`.toLowerCase();
+  const types = [
+    ['Story views', ['story view', 'story views']],
+    ['Followers', ['follower', 'followers']],
+    ['Likes', ['like', 'likes']],
+    ['Comments', ['comment', 'comments']],
+    ['Views', ['view', 'views', 'watch']],
+    ['Members', ['member', 'members', 'group join']],
+    ['Subscribers', ['subscriber', 'subscribers']],
+    ['Shares', ['share', 'shares']],
+    ['Reactions', ['reaction', 'reactions']],
+  ];
+  return types.find(([, keywords]) => keywords.some((keyword) => source.includes(keyword)))?.[0] || 'Other services';
 }
 function serviceName(service) {
   return cleanServiceText(service.name) || 'Social media service';
@@ -161,11 +177,42 @@ function renderServices() {
 }
 async function loadOrderForm() {
   await loadServices();
-  $('#service-select').innerHTML =
-    '<option value="">Select a service</option>' +
-    sortServices(state.services)
-      .map((s) => `<option value="${s.id}">${escapeHtml(platformFor(s))} · ${escapeHtml(serviceName(s))}</option>`)
+  const platforms = [...new Set(state.services.map(platformFor))];
+  $('#platform-select').innerHTML =
+    '<option value="">Select a platform</option>' +
+    platforms
+      .sort((first, second) => (platformOrder.indexOf(first) === -1 ? platformOrder.length : platformOrder.indexOf(first)) - (platformOrder.indexOf(second) === -1 ? platformOrder.length : platformOrder.indexOf(second)))
+      .map((platform) => `<option value="${escapeHtml(platform)}">${escapeHtml(platform)}</option>`)
       .join('');
+  $('#platform-select').onchange = populateServiceTypes;
+  $('#service-type-select').onchange = populatePackages;
+  populateServiceTypes();
+}
+function populateServiceTypes() {
+  const platform = $('#platform-select').value;
+  const types = [...new Set(state.services.filter((service) => !platform || platformFor(service) === platform).map(serviceTypeFor))];
+  $('#service-type-select').innerHTML =
+    '<option value="">Select a service type</option>' +
+    types
+      .sort((first, second) => (serviceTypeOrder.indexOf(first) === -1 ? serviceTypeOrder.length : serviceTypeOrder.indexOf(first)) - (serviceTypeOrder.indexOf(second) === -1 ? serviceTypeOrder.length : serviceTypeOrder.indexOf(second)))
+      .map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`)
+      .join('');
+  $('#service-type-select').disabled = !platform;
+  $('#service-select').innerHTML = '<option value="">Select a package</option>';
+  $('#service-select').disabled = true;
+  $('#service-info').classList.add('hide');
+  calcPrice();
+}
+function populatePackages() {
+  const platform = $('#platform-select').value;
+  const type = $('#service-type-select').value;
+  const services = sortServices(state.services.filter((service) => platformFor(service) === platform && serviceTypeFor(service) === type));
+  $('#service-select').innerHTML =
+    '<option value="">Select a package</option>' +
+    services
+      .map((s) => `<option value="${s.id}">${escapeHtml(serviceName(s))}</option>`)
+      .join('');
+  $('#service-select').disabled = !type || !services.length;
   $('#service-select').onchange = showService;
   showService();
 }

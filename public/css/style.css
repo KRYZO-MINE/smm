@@ -14,6 +14,11 @@
 * {
   box-sizing: border-box;
 }
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 body {
   margin: 0;
   background: var(--paper);
@@ -239,10 +244,12 @@ td {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  min-width: 0;
 }
 .field {
   display: grid;
   gap: 7px;
+  min-width: 0;
 }
 .field.full {
   grid-column: 1/-1;
@@ -254,6 +261,8 @@ td {
 .field input,
 .field select,
 .field textarea {
+  width: 100%;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: 9px;
   padding: 13px;
@@ -262,6 +271,13 @@ td {
   font: inherit;
   outline: 0;
   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.field select {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.service-description {
+  overflow-wrap: anywhere;
 }
 .field input:focus,
 .field select:focus,

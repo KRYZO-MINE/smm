@@ -276,6 +276,11 @@ td {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.field select:disabled {
+  color: #9aa9a3;
+  background: #f1f5f1;
+  cursor: not-allowed;
+}
 .service-description {
   overflow-wrap: anywhere;
 }

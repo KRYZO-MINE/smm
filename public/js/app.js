@@ -64,6 +64,9 @@ async function load() {
     const me = await api('/api/auth/me');
     state.user = me.user;
     $('#user-name').textContent = state.user.name;
+    $('#profile-name').textContent = state.user.name;
+    $('#profile-email').textContent = state.user.email;
+    $('#profile-status').textContent = state.user.status || 'Active';
     setView('dashboard');
   } catch {
     localStorage.removeItem('smm_token');
@@ -114,13 +117,16 @@ async function loadServices() {
 function renderServices() {
   loadServices()
     .then(
-      () =>
-        ($('#service-grid').innerHTML = state.services
-          .map(
-            (s) =>
-              `<div class="card"><div class="eyebrow">${s.category}</div><h3>${s.name}</h3><p class="sub">${s.description || 'Reliable delivery for your social growth.'}</p><div style="margin-top:20px;display:flex;justify-content:space-between;align-items:end"><div><small class="stat-label">Starting rate</small><div class="price">${money(s.selling_rate)}<small>/1k</small></div></div><button class="btn btn-dark" onclick="chooseService(${s.id})">Order</button></div></div>`
-          )
-          .join(''))
+      () => {
+        $('#service-grid').innerHTML = state.services.length
+          ? state.services
+              .map(
+                (s) =>
+                  `<div class="card"><div class="eyebrow">${s.category}</div><h3>${s.name}</h3><p class="sub">${s.description || 'Reliable delivery for your social growth.'}</p><div style="margin-top:20px;display:flex;justify-content:space-between;align-items:end"><div><small class="stat-label">Starting rate</small><div class="price">${money(s.selling_rate)}<small>/1k</small></div></div><button class="btn btn-dark" onclick="chooseService(${s.id})">Order</button></div></div>`
+              )
+              .join('')
+          : '<div class="card empty-state"><h3>No services available yet</h3><p class="sub">An administrator needs to sync the SMMVault catalog before orders can be placed.</p></div>';
+      }
     )
     .catch((e) => toast(e.message));
 }

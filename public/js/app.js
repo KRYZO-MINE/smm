@@ -91,6 +91,35 @@ async function loadDashboard() {
 function row(o) {
   return `<tr><td>#${o.id}</td><td>${o.service_name_snapshot}</td><td>${money(o.customer_price)}</td><td><span class="badge ${o.status !== 'Completed' ? 'pending' : ''}">${o.status}</span></td></tr>`;
 }
+const platformOrder = ['Instagram', 'Facebook', 'TikTok', 'YouTube', 'Telegram', 'WhatsApp', 'Twitter', 'Threads', 'LinkedIn', 'Discord'];
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+}
+function cleanServiceText(value) {
+  return String(value || '')
+    .replace(/[^\p{L}\p{N}\s|()[\]{}:/.&,+#%_-]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*([|:/-])\s*/g, ' $1 ')
+    .trim();
+}
+function platformFor(service) {
+  const source = `${service.category || ''} ${service.name || ''}`.toLowerCase();
+  return platformOrder.find((platform) => source.includes(platform.toLowerCase())) || 'Other platforms';
+}
+function serviceName(service) {
+  return cleanServiceText(service.name) || 'Social media service';
+}
+function sortServices(services) {
+  return [...services].sort((first, second) => {
+    const firstPlatform = platformFor(first);
+    const secondPlatform = platformFor(second);
+    const firstIndex = platformOrder.indexOf(firstPlatform);
+    const secondIndex = platformOrder.indexOf(secondPlatform);
+    return (firstIndex === -1 ? platformOrder.length : firstIndex) - (secondIndex === -1 ? platformOrder.length : secondIndex) ||
+      String(first.category || '').localeCompare(String(second.category || '')) ||
+      serviceName(first).localeCompare(serviceName(second));
+  });
+}
 async function loadOrders() {
   const x = await api('/api/orders');
   state.orders = x.orders;
@@ -112,7 +141,7 @@ async function loadWallet() {
 }
 async function loadServices() {
   const x = await api('/api/services');
-  state.services = x.services;
+  state.services = sortServices(x.services);
 }
 function renderServices() {
   loadServices()
@@ -122,7 +151,7 @@ function renderServices() {
           ? state.services
               .map(
                 (s) =>
-                  `<div class="card"><div class="eyebrow">${s.category}</div><h3>${s.name}</h3><p class="sub">${s.description || 'Reliable delivery for your social growth.'}</p><div style="margin-top:20px;display:flex;justify-content:space-between;align-items:end"><div><small class="stat-label">Starting rate</small><div class="price">${money(s.selling_rate)}<small>/1k</small></div></div><button class="btn btn-dark" onclick="chooseService(${s.id})">Order</button></div></div>`
+                  `<div class="card"><div class="eyebrow">${escapeHtml(platformFor(s))}</div><h3>${escapeHtml(serviceName(s))}</h3><p class="sub">${escapeHtml(s.description || 'Reliable delivery for your social growth.')}</p><div style="margin-top:20px;display:flex;justify-content:space-between;align-items:end"><div><small class="stat-label">Starting rate</small><div class="price">${money(s.selling_rate)}<small>/1k</small></div></div><button class="btn btn-dark" onclick="chooseService(${s.id})">Order</button></div></div>`
               )
               .join('')
           : '<div class="card empty-state"><h3>No services available yet</h3><p class="sub">An administrator needs to sync the SMMVault catalog before orders can be placed.</p></div>';
@@ -134,8 +163,8 @@ async function loadOrderForm() {
   await loadServices();
   $('#service-select').innerHTML =
     '<option value="">Select a service</option>' +
-    state.services
-      .map((s) => `<option value="${s.id}">${s.name} · ${s.category}</option>`)
+    sortServices(state.services)
+      .map((s) => `<option value="${s.id}">${escapeHtml(platformFor(s))} · ${escapeHtml(serviceName(s))}</option>`)
       .join('');
   $('#service-select').onchange = showService;
   showService();
@@ -145,7 +174,7 @@ function showService() {
   $('#service-info').classList.toggle('hide', !s);
   if (!s) return;
   $('#service-copy').innerHTML =
-    `<strong>${s.name}</strong><br>${s.description || 'No description available.'}<br><small>ID ${s.provider_service_id} · ${s.min_quantity}-${s.max_quantity} · ${s.refill_available ? 'Refill available' : 'No refill'}</small>`;
+    `<strong>${escapeHtml(serviceName(s))}</strong><br><span class="service-description">${escapeHtml(s.description || 'No description available.')}</span><br><small>ID ${escapeHtml(s.provider_service_id)} · ${s.min_quantity}-${s.max_quantity} · ${s.refill_available ? 'Refill available' : 'No refill'}</small>`;
   $('#quantity').min = s.min_quantity;
   $('#quantity').max = s.max_quantity;
   calcPrice();

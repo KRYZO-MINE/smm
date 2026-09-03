@@ -258,6 +258,33 @@ td {
   font-size: 13px;
   font-weight: 700;
 }
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-field input {
+  padding-right: 68px;
+}
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  border: 0;
+  padding: 7px 8px;
+  background: transparent;
+  color: var(--green);
+  font: 700 12px 'DM Sans', sans-serif;
+  cursor: pointer;
+}
+.auth-help {
+  margin: 14px 0 0;
+  text-align: center;
+  font-size: 13px;
+}
+.auth-help a {
+  color: var(--green);
+  font-weight: 700;
+}
 .field input,
 .field select,
 .field textarea {

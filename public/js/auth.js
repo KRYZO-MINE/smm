@@ -33,3 +33,25 @@ async function submitAuth(event, mode) {
     errorEl.classList.remove('hide');
   }
 }
+function togglePassword(button) {
+  const input = document.getElementById(button.dataset.passwordToggle);
+  const visible = input.type === 'text';
+  input.type = visible ? 'password' : 'text';
+  button.textContent = visible ? 'Show' : 'Hide';
+  button.setAttribute('aria-label', visible ? 'Show password' : 'Hide password');
+}
+function showForgotPassword() {
+  const email = document.querySelector('input[name="email"]')?.value.trim();
+  const message = email
+    ? `Hello, I need help resetting my SMM Vault password. My account email is ${email}.`
+    : 'Hello, I need help resetting my SMM Vault password.';
+  window.open(`https://t.me/getyourcodes?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+}
+document.addEventListener('click', (event) => {
+  const toggle = event.target.closest('[data-password-toggle]');
+  if (toggle) togglePassword(toggle);
+  if (event.target.closest('[data-forgot-password]')) {
+    event.preventDefault();
+    showForgotPassword();
+  }
+});

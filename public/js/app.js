@@ -210,7 +210,7 @@ function populatePackages() {
   $('#service-select').innerHTML =
     '<option value="">Select a package</option>' +
     services
-      .map((s) => `<option value="${s.id}">${escapeHtml(serviceName(s))}</option>`)
+      .map((s) => `<option value="${s.id}">${escapeHtml(serviceName(s))} · ${money(s.selling_rate)} / 1k</option>`)
       .join('');
   $('#service-select').disabled = !type || !services.length;
   $('#service-select').onchange = showService;
@@ -221,7 +221,7 @@ function showService() {
   $('#service-info').classList.toggle('hide', !s);
   if (!s) return;
   $('#service-copy').innerHTML =
-    `<strong>${escapeHtml(serviceName(s))}</strong><br><span class="service-description">${escapeHtml(s.description || 'No description available.')}</span><br><small>ID ${escapeHtml(s.provider_service_id)} · ${s.min_quantity}-${s.max_quantity} · ${s.refill_available ? 'Refill available' : 'No refill'}</small>`;
+    `<strong>${escapeHtml(serviceName(s))}</strong><br><span class="service-description">${escapeHtml(s.description || 'No description available.')}</span><br><span class="service-rate">${money(s.selling_rate)} per 1,000</span><br><small>ID ${escapeHtml(s.provider_service_id)} · ${s.min_quantity}-${s.max_quantity} · ${s.refill_available ? 'Refill available' : 'No refill'}</small>`;
   $('#quantity').min = s.min_quantity;
   $('#quantity').max = s.max_quantity;
   calcPrice();

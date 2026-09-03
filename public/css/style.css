@@ -223,6 +223,16 @@ h3,
   gap: 10px;
   flex-wrap: wrap;
 }
+.funds-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 16px;
+  margin-bottom: 20px;
+  background: #f5f8f4;
+  border-radius: 10px;
+}
 .table-wrap {
   overflow-x: auto;
 }
@@ -479,6 +489,9 @@ td {
     grid-template-columns: repeat(2, 1fr);
   }
   .two {
+    grid-template-columns: 1fr;
+  }
+  .funds-form {
     grid-template-columns: 1fr;
   }
   .profile-details {

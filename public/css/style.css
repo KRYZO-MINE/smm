@@ -328,6 +328,12 @@ td {
 .service-description {
   overflow-wrap: anywhere;
 }
+.service-rate {
+  display: inline-block;
+  margin: 8px 0 3px;
+  color: var(--green);
+  font-weight: 700;
+}
 .field input:focus,
 .field select:focus,
 .field textarea:focus {

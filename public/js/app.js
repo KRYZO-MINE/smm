@@ -125,6 +125,19 @@ function serviceTypeFor(service) {
 function serviceName(service) {
   return cleanServiceText(service.name) || 'Social media service';
 }
+function serviceTime(service) {
+  const source = serviceName(service);
+  const match = source.match(/(?:start|speed|delivery)\s*([\w/ -]+?)(?=\s*[|]|$)/i);
+  return match ? cleanServiceText(match[1]) : 'Based on recent orders';
+}
+function serviceLinkHint(service) {
+  const type = serviceTypeFor(service);
+  return ['Comments', 'Likes', 'Views', 'Shares', 'Story views'].includes(type)
+    ? 'Public post or reel link'
+    : ['Members', 'Subscribers'].includes(type)
+      ? 'Public group or channel link'
+      : 'Public profile or post link';
+}
 function sortServices(services) {
   return [...services].sort((first, second) => {
     const firstPlatform = platformFor(first);
@@ -220,16 +233,28 @@ function showService() {
   const s = state.services.find((x) => String(x.id) === $('#service-select').value);
   $('#service-info').classList.toggle('hide', !s);
   if (!s) return;
-  $('#service-copy').innerHTML =
-    `<strong>${escapeHtml(serviceName(s))}</strong><br><span class="service-description">${escapeHtml(s.description || 'No description available.')}</span><br><span class="service-rate">${money(s.selling_rate)} per 1,000</span><br><small>ID ${escapeHtml(s.provider_service_id)} · ${s.min_quantity}-${s.max_quantity} · ${s.refill_available ? 'Refill available' : 'No refill'}</small>`;
+  $('#service-name').textContent = serviceName(s);
+  $('#service-id').textContent = `ID ${s.provider_service_id}`;
+  $('#service-rate').textContent = `${money(s.selling_rate)} / 1k`;
+  $('#service-time').textContent = serviceTime(s);
+  $('#service-range').textContent = `${s.min_quantity} - ${s.max_quantity}`;
+  $('#service-link-hint').textContent = serviceLinkHint(s);
+  $('#service-description').textContent = s.description || `${serviceTypeFor(s)} service for ${platformFor(s)} with ${s.refill_available ? 'refill support' : 'standard delivery'}.`;
   $('#quantity').min = s.min_quantity;
   $('#quantity').max = s.max_quantity;
+  $('#quantity-help').textContent = `Min: ${s.min_quantity} · Max: ${s.max_quantity}`;
   calcPrice();
 }
 function chooseService(id) {
   setView('neworder');
   setTimeout(() => {
-    $('#service-select').value = id;
+    const service = state.services.find((item) => String(item.id) === String(id));
+    if (!service) return;
+    $('#platform-select').value = platformFor(service);
+    populateServiceTypes();
+    $('#service-type-select').value = serviceTypeFor(service);
+    populatePackages();
+    $('#service-select').value = String(service.id);
     showService();
   }, 0);
 }

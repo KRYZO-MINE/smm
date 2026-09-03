@@ -70,7 +70,7 @@ async function load() {
     setView('dashboard');
   } catch {
     localStorage.removeItem('smm_token');
-    location.href = '/login.html';
+    location.href = '/login';
   }
 }
 async function loadDashboard() {
@@ -260,7 +260,29 @@ async function placeOrder(e) {
 }
 function logout() {
   localStorage.removeItem('smm_token');
-  location.href = '/login.html';
+  location.href = '/login';
+}
+function toggleFundsForm() {
+  $('#funds-form')?.classList.toggle('hide');
+}
+async function startCashfreePayment(event) {
+  event.preventDefault();
+  const button = $('#pay-button');
+  button.disabled = true;
+  button.textContent = 'Opening checkout...';
+  try {
+    const response = await api('/api/payments/create', {
+      method: 'POST',
+      body: JSON.stringify({ amount: Number($('#fund-amount').value), phone: $('#fund-phone').value }),
+    });
+    if (!window.Cashfree) throw new Error('Cashfree checkout could not load. Refresh and try again.');
+    const cashfree = Cashfree({ mode: response.mode });
+    await cashfree.checkout({ paymentSessionId: response.payment_session_id, redirectTarget: '_self' });
+  } catch (error) {
+    toast(error.message);
+    button.disabled = false;
+    button.textContent = 'Pay securely';
+  }
 }
 function closeNavigation() {
   $('.side')?.classList.remove('open');

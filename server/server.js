@@ -453,6 +453,7 @@ app.use((err, req, res, next) => {
 });
 app.listen(port, () => {
   console.log(`SMM panel listening on http://localhost:${port}`);
+  syncOrders(pool).catch((error) => console.error(`Initial order sync failed: ${error.message}`));
   setInterval(
     () => syncOrders(pool).catch((error) => console.error(`Order sync failed: ${error.message}`)),
     5 * 60 * 1000

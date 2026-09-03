@@ -187,17 +187,29 @@
                 </div>
                 <div id="service-info" class="field full hide">
                   <label>Service details</label>
-                  <div id="service-copy" class="card" style="background: #f5f8f4"></div>
+                  <div id="service-copy" class="service-panel">
+                    <div class="service-panel-head">
+                      <strong id="service-name">Select a package</strong>
+                      <span class="service-id" id="service-id"></span>
+                    </div>
+                    <div class="service-facts">
+                      <div><span>Price</span><strong id="service-rate">₹0.00 / 1k</strong></div>
+                      <div><span>Average time</span><strong id="service-time">Based on recent orders</strong></div>
+                      <div><span>Quantity</span><strong id="service-range">Select a package</strong></div>
+                      <div><span>Link</span><strong id="service-link-hint">Public profile or post link</strong></div>
+                    </div>
+                    <div class="service-copy-text"><span class="stat-label">Description</span><p id="service-description">Choose a package to see its details.</p></div>
+                  </div>
                 </div>
                 <div class="field full">
                   <label>Target link</label
                   ><input id="link" type="url" placeholder="https://instagram.com/..." required />
                 </div>
                 <div class="field">
-                  <label>Quantity</label><input id="quantity" type="number" min="1" required />
+                  <label for="quantity">Quantity</label><input id="quantity" type="number" min="1" required /><small class="field-help" id="quantity-help">Select a package to see limits</small>
                 </div>
                 <div class="field">
-                  <label>Estimated total</label>
+                  <label>Total charge</label>
                   <div class="price" id="estimate">₹0.00</div>
                 </div>
                 <div class="field full"><button class="btn btn-primary">Place order</button></div>

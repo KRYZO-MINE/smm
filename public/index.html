@@ -34,6 +34,7 @@
     <meta name="twitter:image" content="https://smm-lqx9.onrender.com/images/og-image.svg" />
     <link rel="canonical" href="https://smm-lqx9.onrender.com/index.html" />
     <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
     <script src="/js/seo.js"></script>
   </head>
   <body>
@@ -143,13 +144,13 @@
             <div class="card table-wrap">
               <div class="section-head">
                 <h2>Transactions</h2>
-                <button
-                  class="btn btn-primary"
-                  onclick="toast('Payment setup required for live deposits')"
-                >
-                  Add funds
-                </button>
+                <button class="btn btn-primary" onclick="toggleFundsForm()">Add funds</button>
               </div>
+              <form id="funds-form" class="funds-form hide" onsubmit="startCashfreePayment(event)">
+                <div class="field"><label for="fund-amount">Amount (INR)</label><input id="fund-amount" type="number" min="10" max="100000" step="1" placeholder="500" required /></div>
+                <div class="field"><label for="fund-phone">Phone number</label><input id="fund-phone" type="tel" inputmode="numeric" pattern="[0-9]{10}" placeholder="10-digit mobile number" required /></div>
+                <button class="btn btn-dark" id="pay-button">Pay securely</button>
+              </form>
               <table>
                 <thead>
                   <tr>

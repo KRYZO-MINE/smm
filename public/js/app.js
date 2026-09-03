@@ -262,12 +262,17 @@ function logout() {
   localStorage.removeItem('smm_token');
   location.href = '/login.html';
 }
+function closeNavigation() {
+  $('.side')?.classList.remove('open');
+  $('#nav-backdrop')?.classList.remove('visible');
+  $('#mobile-menu')?.setAttribute('aria-expanded', 'false');
+}
 document.addEventListener('click', (e) => {
   const a = e.target.closest('[data-go]');
   if (a) {
     e.preventDefault();
     setView(a.dataset.go);
-    $('.side')?.classList.remove('open');
+    closeNavigation();
   }
 });
 document.addEventListener('DOMContentLoaded', () => {
@@ -275,5 +280,13 @@ document.addEventListener('DOMContentLoaded', () => {
   load();
   $('#quantity')?.addEventListener('input', calcPrice);
   $('#order-form')?.addEventListener('submit', placeOrder);
-  $('#mobile-menu')?.addEventListener('click', () => $('.side').classList.toggle('open'));
+  $('#mobile-menu')?.addEventListener('click', () => {
+    const isOpen = $('.side').classList.toggle('open');
+    $('#nav-backdrop')?.classList.toggle('visible', isOpen);
+    $('#mobile-menu').setAttribute('aria-expanded', String(isOpen));
+  });
+  $('#nav-backdrop')?.addEventListener('click', closeNavigation);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeNavigation();
+  });
 });

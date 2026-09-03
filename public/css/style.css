@@ -344,6 +344,63 @@ td {
   color: var(--green);
   font-weight: 700;
 }
+.service-panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f5f8f4;
+}
+.service-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  line-height: 1.45;
+}
+.service-panel-head strong {
+  overflow-wrap: anywhere;
+}
+.service-id,
+.field-help {
+  color: var(--muted);
+  font-size: 12px;
+}
+.service-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px 0;
+}
+.service-facts div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 11px 12px;
+  background: #fff;
+  border: 1px solid #e5eee7;
+  border-radius: 9px;
+}
+.service-facts span,
+.service-copy-text > span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+.service-facts strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.service-facts div:first-child strong {
+  color: var(--green);
+}
+.service-copy-text p {
+  margin: 6px 0 0;
+  color: #40534c;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
@@ -497,6 +554,9 @@ td {
   .profile-details {
     grid-template-columns: 1fr;
   }
+  .service-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 @media (max-width: 560px) {
   .stats,
@@ -531,5 +591,12 @@ td {
   }
   .card {
     padding: 18px;
+  }
+  .service-panel-head {
+    display: grid;
+    gap: 5px;
+  }
+  .service-facts {
+    grid-template-columns: 1fr;
   }
 }

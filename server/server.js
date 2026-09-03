@@ -6,6 +6,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { Pool } = require('pg');
 const provider = require('./services/smmvault');
 const { syncOrders } = require('./jobs/orderSync');
@@ -14,8 +15,84 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const port = process.env.PORT || 5000;
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
+app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+  try {
+    const timestamp = req.headers['x-webhook-timestamp'];
+    const signature = req.headers['x-webhook-signature'];
+    const rawBody = req.body.toString('utf8');
+    const expected = crypto
+      .createHmac('sha256', process.env.CASHFREE_CLIENT_SECRET || '')
+      .update(`${timestamp}${rawBody}`)
+      .digest('base64');
+    if (!timestamp || !signature || !crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected)))
+      return res.status(401).json({ error: 'Invalid webhook signature' });
+
+    const event = JSON.parse(rawBody);
+    const orderId = event.data?.order?.order_id;
+    const paymentId = event.data?.payment?.cf_payment_id;
+    const paymentStatus = event.data?.payment?.payment_status;
+    if (event.type !== 'PAYMENT_SUCCESS_WEBHOOK' || paymentStatus !== 'SUCCESS' || !orderId || !paymentId)
+      return res.json({ received: true });
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const payment = (await client.query(
+        'SELECT * FROM payments WHERE provider_payment_id=$1 OR reference=$2 FOR UPDATE',
+        [String(paymentId), String(orderId)]
+      )).rows[0];
+      if (!payment || payment.status === 'paid') {
+        await client.query('COMMIT');
+        return res.json({ received: true });
+      }
+      const amount = Number(payment.amount);
+      const wallet = (await client.query('SELECT * FROM wallets WHERE user_id=$1 FOR UPDATE', [payment.user_id])).rows[0];
+      const balance = Number(wallet.balance) + amount;
+      await client.query(
+        "UPDATE wallets SET balance=$1,total_deposited=total_deposited+$2,updated_at=now() WHERE user_id=$3",
+        [balance, amount, payment.user_id]
+      );
+      await client.query(
+        "INSERT INTO wallet_transactions(user_id,type,amount,balance_after,reference,note) VALUES($1,'Deposit',$2,$3,$4,'Cashfree payment')",
+        [payment.user_id, amount, balance, String(orderId)]
+      );
+      await client.query('UPDATE payments SET status=\'paid\',provider_payment_id=$1 WHERE id=$2', [String(paymentId), payment.id]);
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+    res.json({ received: true });
+  } catch (error) {
+    console.error(`Cashfree webhook failed: ${error.message}`);
+    res.status(400).json({ error: 'Invalid Cashfree webhook' });
+  }
+});
 app.use(express.json({ limit: '1mb' }));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 300 }));
+const cleanPages = {
+  '/': 'index.html',
+  '/login': 'login.html',
+  '/register': 'register.html',
+  '/services': 'services.html',
+  '/new-order': 'new-order.html',
+  '/orders': 'orders.html',
+  '/order-details': 'order-details.html',
+  '/add-funds': 'add-funds.html',
+  '/transactions': 'transactions.html',
+  '/profile': 'profile.html',
+  '/support': 'support.html',
+  '/admin': 'admin/index.html',
+};
+Object.entries(cleanPages).forEach(([route, file]) => {
+  app.get(route, (req, res) => res.sendFile(path.join(__dirname, '..', 'public', file)));
+});
+Object.keys(cleanPages).forEach((route) => {
+  if (route !== '/') app.get(`${route}.html`, (req, res) => res.redirect(301, route));
+});
+app.get('/index.html', (req, res) => res.redirect(301, '/'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 const sign = (user) =>
   jwt.sign({ id: user.id, role: user.role, email: user.email }, process.env.JWT_SECRET, {
@@ -224,12 +301,38 @@ app.post('/api/orders', auth, async (req, res) => {
     client.release();
   }
 });
-app.post('/api/payments/create', auth, async (req, res) =>
-  res.status(501).json({ error: 'Payment provider setup required before live deposits' })
-);
-app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), (req, res) =>
-  res.status(501).json({ error: 'Webhook verification is not configured' })
-);
+app.post('/api/payments/create', auth, async (req, res) => {
+  try {
+    const amount = Number(req.body.amount);
+    const phone = String(req.body.phone || '').replace(/\D/g, '');
+    if (!Number.isInteger(amount) || amount < 10 || amount > 100000)
+      return res.status(400).json({ error: 'Amount must be between ₹10 and ₹100,000' });
+    if (!/^\d{10}$/.test(phone)) return res.status(400).json({ error: 'Enter a valid 10-digit phone number' });
+    if (!process.env.CASHFREE_CLIENT_ID || !process.env.CASHFREE_CLIENT_SECRET)
+      return res.status(503).json({ error: 'Cashfree payment is not configured yet' });
+
+    const orderId = `smm_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+    const apiUrl = process.env.CASHFREE_ENV === 'production'
+      ? 'https://api.cashfree.com/pg/orders'
+      : 'https://sandbox.cashfree.com/pg/orders';
+    const { data } = await require('axios').post(apiUrl, {
+      order_id: orderId,
+      order_amount: amount,
+      order_currency: 'INR',
+      customer_details: { customer_id: String(req.user.id), customer_name: req.user.email, customer_email: req.user.email, customer_phone: phone },
+      order_meta: { return_url: `${process.env.APP_URL || 'http://localhost:5000'}/index.html?payment=success` },
+    }, {
+      headers: { 'x-client-id': process.env.CASHFREE_CLIENT_ID, 'x-client-secret': process.env.CASHFREE_CLIENT_SECRET, 'x-api-version': '2023-08-01', 'Content-Type': 'application/json' },
+    });
+    await pool.query(
+      "INSERT INTO payments(user_id,provider,provider_payment_id,amount,status,reference) VALUES($1,'cashfree',$2,$3,'created',$4)",
+      [req.user.id, data.payment_session_id, amount, orderId]
+    );
+    res.json({ payment_session_id: data.payment_session_id, mode: process.env.CASHFREE_ENV === 'production' ? 'production' : 'sandbox' });
+  } catch (error) {
+    fail(res, Object.assign(new Error(error.response?.data?.message || 'Cashfree order creation failed'), { status: 502 }));
+  }
+});
 app.get('/api/payments/history', auth, async (req, res) => {
   try {
     const r = await pool.query('SELECT * FROM payments WHERE user_id=$1 ORDER BY created_at DESC', [

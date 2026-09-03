@@ -216,6 +216,18 @@ app.get('/api/orders', auth, async (req, res) => {
     fail(res, e);
   }
 });
+app.post('/api/orders/sync', auth, async (req, res) => {
+  try {
+    await syncOrders(pool, req.user.id);
+    const r = await pool.query(
+      'SELECT * FROM orders WHERE user_id=$1 ORDER BY created_at DESC',
+      [req.user.id]
+    );
+    res.json({ orders: r.rows });
+  } catch (e) {
+    fail(res, e);
+  }
+});
 app.get('/api/orders/:id', auth, async (req, res) => {
   try {
     const r = await pool.query('SELECT * FROM orders WHERE id=$1 AND user_id=$2', [

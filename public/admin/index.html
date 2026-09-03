@@ -139,7 +139,7 @@
           document.querySelector('#revenue').textContent = money(x.orders.revenue);
           document.querySelector('#profit').textContent = money(x.orders.profit);
         } catch (e) {
-          if (e.message.includes('Authentication')) location.href = '/login.html';
+          if (e.message.includes('Authentication')) location.href = '/login';
           toast(e.message);
         }
       }
@@ -180,7 +180,7 @@
       }
       function logout() {
         localStorage.removeItem('smm_token');
-        location.href = '/login.html';
+        location.href = '/login';
       }
       init();
     </script>

@@ -27,7 +27,7 @@ async function submitAuth(event, mode) {
 
     if (!response.ok) throw new Error(payload.error || 'Authentication failed');
     localStorage.setItem('smm_token', payload.token);
-    location.href = payload.user.role === 'admin' ? '/admin/index.html' : '/index.html';
+    location.href = payload.user.role === 'admin' ? '/admin' : '/';
   } catch (e) {
     errorEl.textContent = e.message;
     errorEl.classList.remove('hide');
